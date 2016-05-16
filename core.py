@@ -3,7 +3,7 @@ from pathlib import Path
 from abc import ABCMeta, abstractmethod
 from collections import Iterable
 import re
-from .outable import OutDf, OutFig, Outable
+from .outable import OutTab, OutFig, Outable
 from lcs import lcs_from_list
 
 
@@ -20,7 +20,7 @@ class Analyzer(metaclass=ABCMeta):
         self.group = group
         self.out = out
 
-        self.OutDf = OutDf
+        self.OutTab = OutTab
         self.OutFig = OutFig
 
     def execute(self, target='result', out='analyze'):
