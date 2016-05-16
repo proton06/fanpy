@@ -20,11 +20,22 @@ class ArgdsOutable(Outable):
 
     def output(self, path=Path(), prefix=''):
         self.argds[self.path_arg_name] = str(path / (prefix + self.name))
+        # print('args:', self.args)
+        # print('argds:', self.argds)
+        # print('method:', self.method)
         self.method(*self.args, **self.argds)
 
 
 class OutDf(Outable):
-    def __init__(self, obj, name, **argds):
+    """
+    pandas DataFrame または Series を出力します．
+
+    parameters
+    ----------
+    
+
+    """
+    def __init__(self, obj, name, *args, **argds):
         self.obj = obj
         self.name = name
         self.argds = argds
@@ -36,27 +47,31 @@ class OutDf(Outable):
 
 class OutFig(ArgdsOutable):
     """
-    matplotlib Figure または Axes を出力します．このインスタンスを生成
-    するときにデフォルトプロットは閉じられることに注意してください.
+    matplotlib の Figure または Axes を出力します．このインスタンスを生成
+    するときに matplotlib のデフォルトプロットは閉じられることに注意し
+    てください.
 
     parameter
     ----------
     obj: matplotlib.figure.Figure または matplotlib.axes._subplots.Axes
         出力したいグラフオブジェクトを指定します
-
     name: str
         出力時のファイル名を指定します
-
     tight: bool
         出力時に余白を切り詰めるか指定します
+    plt_close: bool
+        出力時にデフォルトプロットを閉じるか指定します．True にすると
+        matplotlib.pyplot.close が呼ばれます．
     """
-    def __init__(self, obj, name, *args, tight=True, **argds):
+    def __init__(self, obj, name, *args, tight=True,
+                 plt_close=True, **argds):
         if isinstance(obj, matplotlib.axes._subplots.Axes):
             obj = obj.get_figure()
             
         if tight:
             argds['bbox_inches'] = 'tight'
+        if plt_close:
+            matplotlib.pyplot.close()
             
-        super().__init__(matplotlib.figure.Figure.savefig, 'filename',
-                         name, obj, *args, **argds)
-        matplotlib.pyplot.close()
+        super().__init__(obj.savefig, 'filename', name, *args, **argds)
+        
