@@ -52,16 +52,6 @@ class Analyzer(metaclass=ABCMeta):
 
                 
     def categorize(self, filepaths):
-        """
-        
-        parameters
-        ----------
-        filepaths : [Path]
-
-        returns
-        ----------
-        out : 
-        """
         matched_filepaths = self.match(filepaths)
         return self.grouping(matched_filepaths)
 
@@ -76,6 +66,9 @@ class Analyzer(metaclass=ABCMeta):
 
 
     def grouping(self, filepaths):
+        if not filepaths:
+            return []
+        
         if isinstance(self.group, bool):
             return self._grouping_by_bool(filepaths)
         elif isinstance(self.group, int):
